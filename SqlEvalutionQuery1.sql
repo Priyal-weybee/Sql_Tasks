@@ -47,6 +47,8 @@ select salary from EmployeePosition where salary =(select max(salary)as secondhi
 or Salary= (select min(salary) from EmployeePosition)
 or Salary=(select min(salary) from EmployeePosition where Salary not in (select min(salary) from EmployeePosition))
 create function MinMaxSalary
+--optimized
+select * from (select *,(Row_Number() Over (order by Salary )) highsal ,(Row_Number() Over (order by Salary Desc )) lowSal from EmployeePosition ) a where lowSal in (1,2) or highsal in (1,2) 
 
 
 -- 2.Write a query to fetch 50% records from the EmployeeInfo table.
@@ -59,6 +61,8 @@ fetch next 3 rows only
 
 -- 4.Write an SQL query to determine the 3rd highest salary without using the TOP or limit method.
 select max(salary) from EmployeePosition where salary not in((select max(salary) from EmployeePosition where salary not in (select max(salary) from EmployeePosition)),(select max(salary) from EmployeePosition));
+--optimized
+select * from (select *,(Row_Number() Over (order by Salary Desc)) sortSalary from EmployeePosition ) a where sortSalary=3
 
 -- 5.Write an SQL query to clone a new table from another table without information.
 select top 0 * into clone_EmployeeInfo1 from EmployeeInfo;
